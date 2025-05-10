@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 
-// This is a simulated AI response function since we don't want to require actual API keys
+const GROQ_API_KEY = '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';
+const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+
 export async function POST(request: Request) {
   try {
     const { query } = await request.json();
@@ -13,26 +15,37 @@ export async function POST(request: Request) {
       );
     }
 
-    // Call HuggingFace Inference API for GPT-2 (no API key required for public models)
-    const hfResponse = await fetch(
-      'https://api-inference.huggingface.co/models/gpt2',
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ inputs: query }),
-      }
-    );
+    // Call Groq API
+    const groqResponse = await fetch(GROQ_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${GROQ_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'mixtral-8x7b-32768',
+        messages: [
+          {
+            role: 'user',
+            content: query
+          }
+        ],
+        temperature: 0.7,
+        max_tokens: 1024
+      })
+    });
 
-    const data = await hfResponse.json();
-
-    let aiText = "Sorry, no response.";
-    if (Array.isArray(data) && data[0]?.generated_text) {
-      aiText = data[0].generated_text.replace(query, "").trim();
-    } else if (data?.generated_text) {
-      aiText = data.generated_text.replace(query, "").trim();
+    if (!groqResponse.ok) {
+      throw new Error(`Groq API error: ${groqResponse.statusText}`);
     }
 
-    return NextResponse.json({ response: aiText });
+    const data = await groqResponse.json();
+    
+    if (!data.choices?.[0]?.message?.content) {
+      throw new Error('Invalid response format from Groq API');
+    }
+
+    return NextResponse.json({ response: data.choices[0].message.content });
   } catch (error) {
     console.error('Error processing AI request:', error);
     return NextResponse.json(
