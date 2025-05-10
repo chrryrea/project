@@ -36,14 +36,14 @@ export default function Home() {
                   <ShieldCheckIcon className="feature-icon w-12 h-12" style={{color: '#3b82f6'}} />
                 </div>
                 <h3 className="text-xl font-bold mb-4">Proven Expertise</h3>
-                <p className="text-gray-600">Certified full-stack developer with a track record of successful project deliveries</p>
+                <p className="text-gray-600">Full-stack developer with a track record of successful project deliveries</p>
               </div>
               <div className="card p-8 text-center transform hover:scale-105 transition-transform duration-300">
                 <div className="feature-icon-container mx-auto mb-6" style={{backgroundColor: '#f3e8ff'}}>
                   <UserGroupIcon className="feature-icon w-12 h-12" style={{color: '#8b5cf6'}} />
                 </div>
                 <h3 className="text-xl font-bold mb-4">Client Success</h3>
-                <p className="text-gray-600">Trusted by leading organizations to deliver high-impact solutions</p>
+                <p className="text-gray-600">Trusted by organizations and peers to deliver high-impact solutions</p>
               </div>
               <div className="card p-8 text-center transform hover:scale-105 transition-transform duration-300">
                 <div className="feature-icon-container mx-auto mb-6" style={{backgroundColor: '#e0f2fe'}}>
@@ -65,7 +65,7 @@ export default function Home() {
                 Featured Projects
               </h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
-                Explore my latest work that showcases technical expertise and innovative problem-solving
+                Explore my recent works that showcase technical expertise and innovative problem-solving
               </p>
             </div>
             
@@ -79,7 +79,7 @@ export default function Home() {
                 <div className="card-content p-6">
                   <h3 className="text-xl font-bold mb-3">AI Chat Assistant</h3>
                   <p className="text-gray-600 mb-4">
-                    Advanced AI-powered chat application leveraging cutting-edge language models
+                    Live AI-powered chat application leveraging cutting-edge LLMs
                   </p>
                   <a href="/projects/ai-project" className="inline-flex items-center text-blue-600 font-semibold hover:text-blue-700">
                     Explore Project <span className="ml-2">→</span>
@@ -96,7 +96,7 @@ export default function Home() {
                 <div className="card-content p-6">
                   <h3 className="text-xl font-bold mb-3">Endangered Species Visualization</h3>
                   <p className="text-gray-600 mb-4">
-                    Interactive data visualization highlighting conservation efforts
+                    Interactive data visualization highlighting conservation efforts via studies of population trends for the African Elephant
                   </p>
                   <a href="/projects/endangered-species" className="inline-flex items-center text-green-600 font-semibold hover:text-green-700">
                     View Visualization <span className="ml-2">→</span>
@@ -113,7 +113,7 @@ export default function Home() {
                 <div className="card-content p-6">
                   <h3 className="text-xl font-bold mb-3">Real-time Chatroom</h3>
                   <p className="text-gray-600 mb-4">
-                    Modern chat platform with real-time communication capabilities
+                    Modern chat platform with real-time communication capabilities, commands, persisting sessions, and more
                   </p>
                   <a href="/projects/chatroom" className="inline-flex items-center text-purple-600 font-semibold hover:text-purple-700">
                     Explore <span className="ml-2">→</span>

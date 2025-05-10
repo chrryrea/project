@@ -13,11 +13,26 @@ export default function Contact() {
     e.preventDefault()
     setLoading(true)
     try {
-      // Here we would typically make an API call to send the message
-      // For now, we'll just show a success message
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email, message }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send message');
+      }
+
       setSuccess(true)
+      // Clear form
+      setName('')
+      setEmail('')
+      setMessage('')
     } catch (error) {
       console.error('Error:', error)
+      alert('Failed to send message. Please try again later.')
     } finally {
       setLoading(false)
     }
@@ -91,7 +106,7 @@ export default function Contact() {
           </form>
           {success && (
             <div className="mt-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 rounded-md border border-green-100">
-              Message sent successfully! I&apos;ll get back to you soon.
+              Message sent successfully! I will get back to you soon.
             </div>
           )}
         </div>

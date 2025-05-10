@@ -4,12 +4,12 @@ export default function About() {
       <main className="max-w-2xl mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold mb-4">About Me</h1>
         <p className="mb-6">
-          As a technical leader and innovator, I&apos;m dedicated to solving complex problems with cutting-edge technology and creative solutions.
+          As a technical leader and innovator, I am dedicated to solving complex problems with cutting-edge technology and creative solutions.
         </p>
 
         <h2 className="text-xl font-bold mb-3">My Journey</h2>
         <p className="mb-6">
-          My journey has been rooted in continuous learning, innovation, and a commitment to excellence. I believe in the power of technology to solve real-world problems and improve people&apos;s lives.
+          My journey has been rooted in continuous learning, innovation, and a commitment to excellence. I believe in the power of technology to solve real-world problems and improve lives.
         </p>
 
         <h2 className="text-xl font-bold mb-3">Core Values</h2>
@@ -27,7 +27,9 @@ export default function About() {
           <li>TypeScript</li>
           <li>Python</li>
           <li>Java</li>
-          <li>C++</li>
+          <li>PHP</li>
+          <li>SQL</li>
+          <li>HTML/CSS</li>
         </ul>
         
         <h3 className="font-bold mb-2">Frontend</h3>
@@ -36,6 +38,7 @@ export default function About() {
           <li>Next.js</li>
           <li>Tailwind CSS</li>
           <li>TypeScript</li>
+          <li>Bootstrap</li>
         </ul>
         
         <h3 className="font-bold mb-2">Backend</h3>
@@ -56,7 +59,7 @@ export default function About() {
 
         <h2 className="text-xl font-bold mb-3">My Mission</h2>
         <p className="mb-6">
-          To leverage technology to create meaningful solutions that improve lives and drive positive change in the world.
+          To leverage technology to create meaningful solutions that improve lives and drive progress in the world.
         </p>
       </main>
     </div>

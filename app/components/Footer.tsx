@@ -9,7 +9,7 @@ export default function Footer() {
           {/* Brand Section */}
           <div className="col-span-1 md:col-span-2">
             <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              Portfolio
+              Ian Espinal
             </Link>
             <p className="mt-4 text-gray-600 max-w-md">
               Crafting innovative solutions that make a difference. Building the future, one line of code at a time.
@@ -49,32 +49,12 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <a
-                  href="https://github.com/yourusername"
+                  href="https://github.com/chrryrea"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-600 hover:text-blue-600 transition-colors"
                 >
                   GitHub
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://linkedin.com/in/yourusername"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-600 hover:text-blue-600 transition-colors"
-                >
-                  LinkedIn
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://twitter.com/yourusername"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-600 hover:text-blue-600 transition-colors"
-                >
-                  Twitter
                 </a>
               </li>
             </ul>
@@ -84,7 +64,7 @@ export default function Footer() {
         {/* Copyright */}
         <div className="mt-12 pt-8 border-t border-gray-200">
           <p className="text-center text-gray-600">
-            © {new Date().getFullYear()} Your Name. All rights reserved.
+            © 2025 Ian Espinal All rights reserved.
           </p>
         </div>
       </div>

@@ -17,6 +17,18 @@ export async function POST(request: Request) {
       );
     }
 
+    // Check if API key is available
+    if (!process.env.GROQ_API_KEY) {
+      console.error('GROQ_API_KEY is not set in environment variables');
+      return NextResponse.json(
+        { error: 'API configuration error' },
+        { status: 500 }
+      );
+    }
+
+    // Log first few characters of API key for debugging (safely)
+    console.log('API Key prefix:', process.env.GROQ_API_KEY.substring(0, 8) + '...');
+
     console.log('Making request to Groq API');
     // Call Groq API
     const groqResponse = await fetch(GROQ_API_URL, {
