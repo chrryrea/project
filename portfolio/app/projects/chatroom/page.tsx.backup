@@ -1,0 +1,490 @@
+"use client"
+
+import { useState, useEffect, useRef } from 'react'
+
+export default function Chatroom() {
+  const [messages, setMessages] = useState<{ user: string; text: string; timestamp: string; isCommand?: boolean }[]>([]);
+  const [inputMessage, setInputMessage] = useState('');
+  const [username, setUsername] = useState('');
+  const [room, setRoom] = useState('General');
+  const [isConnected, setIsConnected] = useState(false);
+  
+  // Using static arrays instead of state since we're not modifying these in this demo
+  const rooms = ['General', 'Technology', 'Random'];
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  // Available commands
+  const commands = [
+    { name: '/help', description: 'Show available commands' },
+    { name: '/clear', description: 'Clear the chat history' },
+    { name: '/nick <username>', description: 'Change your username' },
+    { name: '/join <room>', description: 'Join a different room' },
+    { name: '/users', description: 'Show users in the current room' },
+    { name: '/time', description: 'Show current time' },
+    { name: '/msg <user> <message>', description: 'Send a private message' },
+    { name: '/flip', description: 'Flip a coin (heads or tails)' },
+    { name: '/roll [sides]', description: 'Roll a die (default: 6 sides)' },
+  ]
+
+  // Simulate connection
+  const handleConnect = () => {
+    if (username.trim() === '') return;
+    setIsConnected(true);
+    
+    // Load saved messages from localStorage if they exist
+    try {
+      if (typeof window !== 'undefined') {
+        const savedMessages = localStorage.getItem(`chatMessages_${room}`);
+        if (savedMessages) {
+          try {
+            const parsedMessages = JSON.parse(savedMessages);
+            setMessages(parsedMessages);
+            // Add reconnection message
+            const now = new Date();
+            const timestamp = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+            setMessages(prev => [...prev, {
+              user: 'System',
+              text: `Welcome back to the ${room} room, ${username}! Chat history loaded.`,
+              timestamp
+            }]);
+          } catch (error) {
+            console.error('Error parsing saved messages:', error);
+            // Add welcome message if there's an error
+            addMessage('System', `Welcome to the ${room} room, ${username}!`);
+          }
+        } else {
+          // Add welcome message if no saved messages
+          addMessage('System', `Welcome to the ${room} room, ${username}!`);
+        }
+      } else {
+        // Fallback for SSR
+        addMessage('System', `Welcome to the ${room} room, ${username}!`);
+      }
+    } catch (error) {
+      console.error('Error accessing localStorage:', error);
+      addMessage('System', `Welcome to the ${room} room, ${username}!`);
+    }
+  };
+
+  // Add a message to the chat
+  const addMessage = (user: string, text: string, isCommand = false) => {
+    const now = new Date();
+    const timestamp = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+    const newMessage = { user, text, timestamp, isCommand };
+    setMessages(prev => {
+      const updatedMessages = [...prev, newMessage];
+      // Save messages to localStorage (except for non-user messages)
+      if (user !== 'System' && !isCommand && typeof window !== 'undefined') {
+        localStorage.setItem(`chatMessages_${room}`, JSON.stringify(updatedMessages));
+      }
+      return updatedMessages;
+    });
+  };
+
+  // Process commands
+  const processCommand = (commandText: string) => {
+    const args = commandText.split(' ');
+    const command = args[0].toLowerCase();
+    
+    switch (command) {
+      case '/help':
+        addMessage('System', 'Available commands:', true);
+        commands.forEach(cmd => {
+          addMessage('System', `${cmd.name} - ${cmd.description}`, true);
+        });
+        break;
+        
+      case '/clear':
+        setMessages([]);
+        addMessage('System', 'Chat history cleared.', true);
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem(`chatMessages_${room}`);
+        }
+        break;
+        
+      case '/nick':
+        if (args.length < 2) {
+          addMessage('System', 'Please provide a username. Usage: /nick <username>', true);
+        } else {
+          const newUsername = args.slice(1).join(' ');
+          addMessage('System', `Username changed from ${username} to ${newUsername}.`, true);
+          setUsername(newUsername);
+        }
+        break;
+        
+      case '/join':
+        if (args.length < 2) {
+          addMessage('System', 'Please provide a room name. Usage: /join <room>', true);
+        } else {
+          const newRoom = args[1];
+          if (rooms.includes(newRoom)) {
+            addMessage('System', `Leaving ${room} and joining ${newRoom}...`, true);
+            setRoom(newRoom);
+            setMessages([]);
+            
+            // Load messages for the new room if they exist
+            try {
+              if (typeof window !== 'undefined') {
+                const savedMessages = localStorage.getItem(`chatMessages_${newRoom}`);
+                if (savedMessages) {
+                  const parsedMessages = JSON.parse(savedMessages);
+                  setMessages(parsedMessages);
+                  addMessage('System', `Welcome to the ${newRoom} room, ${username}! Chat history loaded.`, true);
+                } else {
+                  addMessage('System', `Welcome to the ${newRoom} room, ${username}!`, true);
+                }
+              }
+            } catch (error) {
+              console.error('Error loading messages for new room:', error);
+              addMessage('System', `Welcome to the ${newRoom} room, ${username}!`, true);
+            }
+          } else {
+            addMessage('System', `Room "${newRoom}" does not exist. Available rooms: ${rooms.join(', ')}`, true);
+          }
+        }
+        break;
+        
+      case '/time':
+        const now = new Date();
+        addMessage('System', `Current time: ${now.toLocaleTimeString()}`, true);
+        break;
+        
+      case '/flip':
+        const flipResults = ['HEADS', 'TAILS'];
+        const flipResult = flipResults[Math.floor(Math.random() * flipResults.length)];
+        addMessage('System', `${username} flipped a coin and got: ${flipResult}`, true);
+        break;
+        
+      case '/roll':
+        let sides = 6; // Default to a 6-sided die
+        if (args.length > 1 && !isNaN(parseInt(args[1]))) {
+          sides = parseInt(args[1]);
+        }
+        const rollResult = Math.floor(Math.random() * sides) + 1;
+        addMessage('System', `${username} rolled a ${sides}-sided die and got: ${rollResult}`, true);
+        break;
+        
+      case '/users':
+        // In a real app, this would show actual users. For the demo, we'll simulate:
+        const fakeUsers = ['Alice', 'Bob', 'Charlie', username];
+        addMessage('System', `Users in ${room}: ${fakeUsers.join(', ')}`, true);
+        break;
+      
+      case '/msg':
+        if (args.length < 3) {
+          addMessage('System', 'Please provide a user and message. Usage: /msg <user> <message>', true);
+        } else {
+          const targetUser = args[1];
+          const pm = args.slice(2).join(' ');
+          addMessage('System', `Private message to ${targetUser}: ${pm}`, true);
+        }
+        break;
+        
+      default:
+        addMessage('System', `Unknown command: ${command}. Type /help for available commands.`, true);
+    }
+  };
+
+  // Send message function
+  const sendMessage = () => {
+    if (inputMessage.trim() === '') return;
+    
+    if (inputMessage.startsWith('/')) {
+      // Process as command
+      processCommand(inputMessage);
+    } else {
+      // Regular message
+      addMessage(username, inputMessage);
+    }
+    
+    setInputMessage('');
+  };
+
+  // Note: In a complete implementation, this would include the changeRoom function
+  // that would handle switching between different chat rooms and loading chat history
+
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+      
+    case '/time':
+      const now = new Date();
+      addMessage('System', `Current time: ${now.toLocaleTimeString()}`, true);
+      break;
+      
+    case '/flip':
+      const flipResults = ['HEADS', 'TAILS'];
+      const flipResult = flipResults[Math.floor(Math.random() * flipResults.length)];
+      addMessage('System', `${username} flipped a coin and got: ${flipResult}`, true);
+      break;
+      
+    case '/roll':
+      let sides = 6; // Default to a 6-sided die
+      if (args.length > 1 && !isNaN(parseInt(args[1]))) {
+        sides = parseInt(args[1]);
+      }
+      const rollResult = Math.floor(Math.random() * sides) + 1;
+      addMessage('System', `${username} rolled a ${sides}-sided die and got: ${rollResult}`, true);
+      break;
+      
+    case '/users':
+      // In a real app, this would show actual users. For the demo, we'll simulate:
+      const fakeUsers = ['Alice', 'Bob', 'Charlie', username];
+      addMessage('System', `Users in ${room}: ${fakeUsers.join(', ')}`, true);
+      break;
+    
+    case '/msg':
+      if (args.length < 3) {
+        addMessage('System', 'Please provide a user and message. Usage: /msg <user> <message>', true);
+      } else {
+        const targetUser = args[1];
+        const pm = args.slice(2).join(' ');
+        addMessage('System', `Private message to ${targetUser}: ${pm}`, true);
+      }
+      break;
+      
+    default:
+      addMessage('System', `Unknown command: ${command}. Type /help for available commands.`, true);
+  }
+};
+
+// Send message function
+const sendMessage = () => {
+  if (inputMessage.trim() === '') return;
+  
+  if (inputMessage.startsWith('/')) {
+    // Process as command
+    processCommand(inputMessage);
+  } else {
+    // Regular message
+    addMessage(username, inputMessage);
+  }
+  
+  setInputMessage('');
+};
+
+// Note: In a complete implementation, this would include the changeRoom function
+// that would handle switching between different chat rooms and loading chat history
+
+// Auto-scroll to bottom when new messages arrive
+useEffect(() => {
+  messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+}, [messages]);
+
+return (
+  <div className="max-w-6xl mx-auto px-4 py-12 outline outline-1 outline-blue-300 outline-offset-4">
+    <h1 className="text-3xl font-bold text-gray-900 mb-8">Real-time Chatroom</h1>
+    
+    {!isConnected ? (
+      // Connection Panel
+      <div className="bg-white rounded-lg shadow-md p-6 max-w-md mx-auto">
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">Join a Room</h2>
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+              Username
+            </label>
+            <input
+              type="text"
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              placeholder="Enter your username"
+            />
+          </div>
+          <div>
+            <label htmlFor="room" className="block text-sm font-medium text-gray-700">
+              Room
+            </label>
+            <select
+              id="room"
+              value={room}
+              onChange={(e) => setRoom(e.target.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            >
+              {rooms.map((r) => (
+                <option key={r} value={r}>{r}</option>
+              ))}
+            </select>
+          </div>
+          <button
+            onClick={handleConnect}
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            Connect to Chat
+          </button>
+          
+          {/* Command suggestions */}
+          {inputMessage.startsWith('/') && (
+            <div className="mt-2 bg-white border border-gray-200 rounded-md shadow-sm">
+              {commands
+                .filter(cmd => cmd.name.startsWith(inputMessage.split(' ')[0]))
+                .slice(0, 3)
+                .map((cmd, i) => (
+                  <div 
+                    key={i} 
+                    className="px-3 py-2 hover:bg-gray-50 cursor-pointer text-sm border-b border-gray-100 last:border-0"
+                    onClick={() => setInputMessage(cmd.name)}
+                  >
+                    <span className="font-mono font-semibold">{cmd.name}</span> - {cmd.description}
+                  </div>
+                ))
+              }
+              <input
+                type="text"
+                id="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                placeholder="Enter your username"
+              />
+            </div>
+            <div>
+              <label htmlFor="room" className="block text-sm font-medium text-gray-700">
+                Room
+              </label>
+              <select
+                id="room"
+                value={room}
+                onChange={(e) => setRoom(e.target.value)}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              >
+                {rooms.map((r) => (
+                  <option key={r} value={r}>{r}</option>
+                ))}
+              </select>
+            </div>
+            <button
+              onClick={handleConnect}
+              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              Connect to Chat
+            </button>
+            
+            {/* Command suggestions */}
+            {inputMessage.startsWith('/') && (
+              <div className="mt-2 bg-white border border-gray-200 rounded-md shadow-sm">
+                {commands
+                  .filter(cmd => cmd.name.startsWith(inputMessage.split(' ')[0]))
+                  .slice(0, 3)
+                  .map((cmd, i) => (
+                    <div 
+                      key={i} 
+                      className="px-3 py-2 hover:bg-gray-50 cursor-pointer text-sm border-b border-gray-100 last:border-0"
+                      onClick={() => setInputMessage(cmd.name)}
+                    >
+                      <span className="font-mono font-semibold">{cmd.name}</span> - {cmd.description}
+                    </div>
+                  ))
+                }
+              </div>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div>
+          <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold text-gray-900">Chat Room: {room}</h2>
+              <div className="text-sm text-gray-500">Logged in as <span className="font-semibold">{username}</span></div>
+            </div>
+            
+            {/* Chat Messages Area */}
+            <div className="bg-gray-50 rounded-lg border-3 border-blue-500 shadow-lg h-96 overflow-y-auto p-4 mb-4 outline outline-2 outline-blue-300 outline-offset-2">
+              {messages.length === 0 ? (
+                <div className="text-center text-gray-500 mt-32">No messages yet. Start the conversation!</div>
+              ) : (
+                messages.map((msg, index) => (
+                  <div key={index} className={`mb-3 ${msg.user === username ? 'text-right' : ''}`}>
+                    <div className={`inline-block max-w-3/4 rounded-lg px-4 py-2 shadow-sm ${
+                      msg.user === 'System' 
+                        ? 'bg-gradient-to-r from-gray-200 to-gray-300 text-gray-800 border border-gray-300' 
+                        : msg.user === username 
+                          ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white border border-blue-600' 
+                          : 'bg-gradient-to-r from-gray-300 to-gray-400 text-gray-800 border border-gray-400'
+                    } ${msg.isCommand ? 'italic opacity-75' : ''}`}>
+                      {msg.user !== username && msg.user !== 'System' && (
+                        <div className="font-semibold text-xs mb-1">{msg.user}</div>
+                      )}
+                      <div>{msg.text}</div>
+                      <div className="text-xs opacity-75 mt-1">{msg.timestamp}</div>
+                    </div>
+                  </div>
+                ))
+              )}
+              <div ref={messagesEndRef} /> {/* Auto-scroll anchor */}
+            </div>
+            
+            {/* Message Input */}
+            <div className="flex space-x-2 border-2 border-blue-300 rounded-lg p-2 bg-white shadow-md">
+              <input
+                type="text"
+                value={inputMessage}
+                onChange={(e) => setInputMessage(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && inputMessage.trim() !== '') {
+                    sendMessage();
+                  }
+                }}
+                className="flex-1 rounded-md border-blue-200 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                placeholder="Type a message or command (try /help, /flip, /roll)..."
+              />
+              <button
+                onClick={() => {
+                  if (inputMessage.trim() !== '') {
+                    sendMessage();
+                  }
+                }}
+                className="bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 px-6 rounded-md hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 font-medium shadow-sm"
+              >
+                Send
+              </button>
+            </div>
+            
+            {/* Command suggestions */}
+            {inputMessage.startsWith('/') && (
+              <div className="mt-2 bg-white border border-gray-200 rounded-md shadow-sm">
+                {commands
+                  .filter(cmd => cmd.name.startsWith(inputMessage.split(' ')[0]))
+                  .slice(0, 3)
+                  .map((cmd, i) => (
+                    <div 
+                      key={i} 
+                      className="px-3 py-2 hover:bg-gray-50 cursor-pointer text-sm border-b border-gray-100 last:border-0"
+                      onClick={() => setInputMessage(cmd.name)}
+                    >
+                      <span className="font-mono font-semibold">{cmd.name}</span> - {cmd.description}
+                    </div>
+                  ))
+                }
+              </div>
+            )}
+          </div>
+          
+          {/* Features and Technologies Section */}
+          <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Features:</h3>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 mb-4">
+              <li>Real-time messaging</li>
+              <li>Multiple chat rooms</li>
+              <li>Persistent chat history (saved locally)</li>
+              <li>Built-in commands (try typing /help, /flip, /roll)</li>
+              <li>User presence</li>
+              <li>Responsive design</li>
+            </ul>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Technologies Used:</h3>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+              <li>React for the frontend</li>
+              <li>Next.js for server-side rendering</li>
+              <li>Tailwind CSS for styling</li>
+              <li>WebSockets for real-time communication (simulated in this demo)</li>
+            </ul>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

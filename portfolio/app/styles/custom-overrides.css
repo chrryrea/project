@@ -1,0 +1,49 @@
+/* Custom overrides to force light mode regardless of user preferences */
+
+:root {
+  /* Force light mode colors */
+  --gray-50: #f9fafb !important;
+  --gray-100: #f3f4f6 !important;
+  --gray-200: #e5e7eb !important;
+  --gray-300: #d1d5db !important;
+  --gray-700: #374151 !important;
+  --gray-800: #1f2937 !important;
+  --gray-900: #111827 !important;
+}
+
+/* Explicitly set background and text colors */
+body {
+  background-color: #ffffff !important;
+  color: #1f2937 !important;
+}
+
+main {
+  background-color: #ffffff !important;
+}
+
+/* Ensure about page has proper background */
+.about-container {
+  background-color: #ffffff !important;
+}
+
+/* Card backgrounds */
+.card {
+  background-color: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+/* Override any automatic color inversion */
+@media (prefers-color-scheme: dark) {
+  body, main, .card, .about-container {
+    background-color: #ffffff !important;
+    color: #1f2937 !important;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    color: #1f2937 !important;
+  }
+  
+  p, span, li {
+    color: #374151 !important;
+  }
+}
