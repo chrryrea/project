@@ -92,7 +92,7 @@ a:hover {
 }
 
 /* Buttons */
-.btn-primary {
+.btn-primary, .btn-secondary {
   display: inline-block;
   padding: 0.75rem 1.5rem;
   font-weight: 600;
@@ -100,16 +100,7 @@ a:hover {
   border-radius: 0.5rem;
   transition: all 0.2s ease-in-out;
   cursor: pointer;
-}
-
-.btn-secondary {
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
-  font-weight: 600;
-  text-align: center;
-  border-radius: 0.5rem;
-  transition: all 0.2s ease-in-out;
-  cursor: pointer;
+  margin: 0.25rem 0.5rem;
 }
 
 /* Cards */
@@ -119,6 +110,9 @@ a:hover {
   overflow: hidden;
   box-shadow: var(--box-shadow);
   transition: all 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
 .card:hover {
@@ -149,7 +143,8 @@ a:hover {
 /* Grid */
 .grid {
   display: grid;
-  gap: 1.5rem;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
 /* Responsive Design */
@@ -163,11 +158,9 @@ a:hover {
   h1 {
     font-size: 3rem;
   }
-  
   h2 {
     font-size: 2.5rem;
   }
-  
   h3 {
     font-size: 1.75rem;
   }
@@ -180,71 +173,19 @@ a:hover {
 }
 
 /* Utility Classes */
-.text-center {
-  text-align: center;
-}
+.text-center { text-align: center; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+.mb-4 { margin-bottom: 1rem; }
+.mb-8 { margin-bottom: 2rem; }
+.mt-4 { margin-top: 1rem; }
+.mt-8 { margin-top: 2rem; }
+.p-4 { padding: 1rem; }
+.p-8 { padding: 2rem; }
+.rounded-lg { border-radius: 0.5rem; }
+.shadow-lg { box-shadow: var(--box-shadow-lg); }
+.transition-all { transition: all 0.3s ease-in-out; }
+.transform { transform: translateY(0); }
+.hover\:scale-105:hover { transform: scale(1.05); }
+.hover\:shadow-xl:hover { box-shadow: var(--box-shadow-lg); }
 
-.mx-auto {
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.mb-4 {
-  margin-bottom: 1rem;
-}
-
-.mb-8 {
-  margin-bottom: 2rem;
-}
-
-.mt-4 {
-  margin-top: 1rem;
-}
-
-.mt-8 {
-  margin-top: 2rem;
-}
-
-.p-4 {
-  padding: 1rem;
-}
-
-.p-8 {
-  padding: 2rem;
-}
-
-.rounded-lg {
-  border-radius: 0.5rem;
-}
-
-.shadow-lg {
-  box-shadow: var(--box-shadow-lg);
-}
-
-.transition-all {
-  transition: all 0.3s ease-in-out;
-}
-
-.transform {
-  transform: translateY(0);
-}
-
-.hover\:scale-105:hover {
-  transform: scale(1.05);
-}
-
-.hover\:shadow-xl:hover {
-  box-shadow: var(--box-shadow-lg);
-}
-
-/* Disable automatic dark mode for now to ensure consistent look */
-/*
-@media (prefers-color-scheme: dark) {
-  :root {
-    --gray-50: #18181b;
-    --gray-100: #27272a;
-    --gray-900: #f9fafb;
-    --gray-800: #e5e7eb;
-  }
-}
-*/
+/* Remove dark mode overrides for now */

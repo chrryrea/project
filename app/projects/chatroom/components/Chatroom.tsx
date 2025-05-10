@@ -5,9 +5,14 @@ import ChatForm from './ChatForm'
 import MessageList from './MessageList'
 import CommandSuggestions from './CommandSuggestions'
 import ChatFeatures from './ChatFeatures'
-import { Message, Command, ChatFormProps } from './types'
+import { Message, Command } from './types'
 
-export default function Chatroom({ initialRoom, initialUsername }: ChatFormProps) {
+interface ChatroomProps {
+  initialRoom: string
+  initialUsername: string
+}
+
+export default function Chatroom({ initialRoom, initialUsername }: ChatroomProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const [inputMessage, setInputMessage] = useState('')
   const [username, setUsername] = useState(initialUsername)
@@ -74,22 +79,24 @@ export default function Chatroom({ initialRoom, initialUsername }: ChatFormProps
     const command = args[0].toLowerCase()
 
     switch (command) {
-      case '/help':
+      case '/help': {
         addMessage('System', 'Available commands:', true)
         commands.forEach(cmd => {
           addMessage('System', `${cmd.name} - ${cmd.description}`, true)
         })
         break
+      }
 
-      case '/clear':
+      case '/clear': {
         setMessages([])
         addMessage('System', 'Chat history cleared.', true)
         if (typeof window !== 'undefined') {
           localStorage.removeItem(`chatMessages_${room}`)
         }
         break
+      }
 
-      case '/nick':
+      case '/nick': {
         if (args.length < 2) {
           addMessage('System', 'Please provide a username. Usage: /nick <username>', true)
           return
@@ -98,8 +105,9 @@ export default function Chatroom({ initialRoom, initialUsername }: ChatFormProps
         addMessage('System', `Username changed from ${username} to ${newUsername}.`, true)
         setUsername(newUsername)
         break
+      }
 
-      case '/join':
+      case '/join': {
         if (args.length < 2) {
           addMessage('System', 'Please provide a room name. Usage: /join <room>', true)
           return
@@ -110,18 +118,21 @@ export default function Chatroom({ initialRoom, initialUsername }: ChatFormProps
         setMessages([])
         loadMessages()
         break
+      }
 
-      case '/time':
+      case '/time': {
         const now = new Date()
         addMessage('System', `Current time: ${now.toLocaleTimeString()}`, true)
         break
+      }
 
-      case '/flip':
+      case '/flip': {
         const flipResult = Math.random() > 0.5 ? 'HEADS' : 'TAILS'
         addMessage('System', `${username} flipped a coin and got: ${flipResult}`, true)
         break
+      }
 
-      case '/roll':
+      case '/roll': {
         const sides = args.length > 1 ? parseInt(args[1]) : 6
         if (isNaN(sides)) {
           addMessage('System', `Invalid number of sides. Using default: 6`, true)
@@ -129,13 +140,15 @@ export default function Chatroom({ initialRoom, initialUsername }: ChatFormProps
         const rollResult = Math.floor(Math.random() * Math.max(1, sides)) + 1
         addMessage('System', `${username} rolled a ${sides}-sided die and got: ${rollResult}`, true)
         break
+      }
 
-      case '/users':
+      case '/users': {
         const fakeUsers = ['Alice', 'Bob', 'Charlie', username]
         addMessage('System', `Users in ${room}: ${fakeUsers.join(', ')}`, true)
         break
+      }
 
-      case '/msg':
+      case '/msg': {
         if (args.length < 3) {
           addMessage('System', 'Please provide a user and message. Usage: /msg <user> <message>', true)
           return
@@ -144,9 +157,11 @@ export default function Chatroom({ initialRoom, initialUsername }: ChatFormProps
         const message = args.slice(2).join(' ')
         addMessage('System', `Private message to ${targetUser}: ${message}`, true)
         break
+      }
 
-      default:
+      default: {
         addMessage('System', `Unknown command: ${command}. Type /help for available commands.`, true)
+      }
     }
   }
 
@@ -190,9 +205,13 @@ export default function Chatroom({ initialRoom, initialUsername }: ChatFormProps
           <MessageList messages={messages} />
           
           <ChatForm
+            username={username}
+            setUsername={setUsername}
+            room={room}
+            setRoom={setRoom}
             inputMessage={inputMessage}
             setInputMessage={setInputMessage}
-            onSendMessage={sendMessage}
+            onSendMessage={() => sendMessage()}
           />
           
           <CommandSuggestions

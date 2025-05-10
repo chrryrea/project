@@ -24,8 +24,12 @@ export async function POST(request: Request) {
       const fileName = `${Date.now()}_${file.name}`
       const filePath = join(process.cwd(), 'public', 'documents', fileName)
       
+      // Convert ArrayBuffer to Buffer
+      const arrayBuffer = await file.arrayBuffer()
+      const buffer = Buffer.from(arrayBuffer)
+      
       // Save the file
-      await writeFile(filePath, await file.arrayBuffer())
+      await writeFile(filePath, buffer)
       documentPaths.push(filePath)
     }
 

@@ -1,12 +1,15 @@
 "use client"
 
 import { Message } from './types'
+import { useRef } from 'react'
 
 interface MessageListProps {
   messages: Message[]
 }
 
 export default function MessageList({ messages }: MessageListProps) {
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+
   return (
     <div className="bg-gray-50 rounded-lg border-3 border-blue-500 shadow-lg h-96 overflow-y-auto p-4 mb-4 outline outline-2 outline-blue-300 outline-offset-2">
       {messages.length === 0 ? (
