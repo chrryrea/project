@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 
-const GROQ_API_KEY = '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';
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 export async function POST(request: Request) {
@@ -20,7 +19,7 @@ export async function POST(request: Request) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${GROQ_API_KEY}`
+        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`
       },
       body: JSON.stringify({
         model: 'meta-llama/llama-4-scout-17b-16e-instruct',
