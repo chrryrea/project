@@ -35,14 +35,13 @@ export async function POST(request: Request) {
       })
     });
 
-    let data;
     if (!groqResponse.ok) {
       const errorBody = await groqResponse.text();
       console.error('Groq API error response:', errorBody);
       throw new Error(`Groq API error: ${groqResponse.statusText}`);
     }
 
-    data = await groqResponse.json();
+    const data = await groqResponse.json();
     console.log('Groq API status:', groqResponse.status);
     console.log('Groq API response:', JSON.stringify(data));
     
