@@ -1,6 +1,5 @@
 "use client"
 
-import Navigation from '../components/Navigation'
 import { useState } from 'react'
 
 export default function Contact() {
@@ -26,7 +25,6 @@ export default function Contact() {
 
   return (
     <div>
-      <Navigation />
       <main className="max-w-3xl mx-auto px-6 py-12">
         <div className="text-center mb-16 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-10 rounded-2xl shadow-md">
           <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 mb-4">Get in Touch</h1>

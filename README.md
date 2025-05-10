@@ -2,16 +2,6 @@
 
 A modern, responsive personal portfolio website built with Next.js, TypeScript, and Tailwind CSS.
 
-## Features
-
-- 🎨 Modern and responsive design
-- ⚡ Fast performance with Next.js
-- 🔒 Type-safe with TypeScript
-- 🎭 Beautiful animations with Framer Motion
-- 📱 Mobile-first approach
-- 🧪 Comprehensive test coverage
-- 🔍 SEO optimized
-- 🚀 CI/CD with GitHub Actions
 
 ## Tech Stack
 
