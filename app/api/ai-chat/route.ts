@@ -23,7 +23,7 @@ export async function POST(request: Request) {
         'Authorization': `Bearer ${GROQ_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'mixtral-8x7b-32768',
+        model: 'meta-llama/llama-4-scout-17b-16e-instruct',
         messages: [
           {
             role: 'user',
@@ -35,11 +35,14 @@ export async function POST(request: Request) {
       })
     });
 
+    let data;
     if (!groqResponse.ok) {
+      const errorBody = await groqResponse.text();
+      console.error('Groq API error response:', errorBody);
       throw new Error(`Groq API error: ${groqResponse.statusText}`);
     }
 
-    const data = await groqResponse.json();
+    data = await groqResponse.json();
     console.log('Groq API status:', groqResponse.status);
     console.log('Groq API response:', JSON.stringify(data));
     
