@@ -23,21 +23,25 @@ export default function AIProjectPage() {
     setInput("")
     try {
       // Call the local AI chat API
+      console.log('Sending request to:', API_URL);
       const response = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: userInput })
-      })
-      const data = await response.json()
-      let aiText = "Sorry, no response."
+      });
+      console.log('Response status:', response.status);
+      const data = await response.json();
+      console.log('Response data:', data);
+      let aiText = "Sorry, no response.";
       if (data?.response) {
-        aiText = data.response
+        aiText = data.response;
       }
-      setMessages(prev => [...prev, { role: 'ai', text: aiText }])
-    } catch {
-      setMessages(prev => [...prev, { role: 'ai', text: "Sorry, there was an error." }])
+      setMessages(prev => [...prev, { role: 'ai', text: aiText }]);
+    } catch (error) {
+      console.error('Error in API call:', error);
+      setMessages(prev => [...prev, { role: 'ai', text: "Sorry, there was an error." }]);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 

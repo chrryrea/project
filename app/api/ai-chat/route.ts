@@ -4,16 +4,20 @@ const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 export async function POST(request: Request) {
   try {
+    console.log('Received request in AI chat API');
     const { query } = await request.json();
+    console.log('Query received:', query);
     
     // Check if we have a valid query
     if (!query || typeof query !== 'string' || query.trim() === '') {
+      console.log('Invalid query received');
       return NextResponse.json(
         { error: 'Please provide a valid question.' },
         { status: 400 }
       );
     }
 
+    console.log('Making request to Groq API');
     // Call Groq API
     const groqResponse = await fetch(GROQ_API_URL, {
       method: 'POST',
@@ -34,6 +38,7 @@ export async function POST(request: Request) {
       })
     });
 
+    console.log('Groq API response status:', groqResponse.status);
     if (!groqResponse.ok) {
       const errorBody = await groqResponse.text();
       console.error('Groq API error response:', errorBody);
@@ -41,10 +46,10 @@ export async function POST(request: Request) {
     }
 
     const data = await groqResponse.json();
-    console.log('Groq API status:', groqResponse.status);
-    console.log('Groq API response:', JSON.stringify(data));
+    console.log('Groq API response data:', data);
     
     if (!data.choices?.[0]?.message?.content) {
+      console.error('Invalid response format from Groq API');
       throw new Error('Invalid response format from Groq API');
     }
 
