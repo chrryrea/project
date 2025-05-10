@@ -167,6 +167,12 @@ export default function AIProject({ initialMessages }: AIProjectProps) {
     }
   }
 
+  const clearChat = () => {
+    setMessages([])
+    localStorage.removeItem('aiChatMessages')
+    toast.success('Chat cleared successfully')
+  }
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-12">
       <div className="mb-8 text-center">
@@ -208,11 +214,7 @@ export default function AIProject({ initialMessages }: AIProjectProps) {
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-semibold text-gray-900">Chat History</h2>
           <button
-            onClick={() => {
-              setMessages([])
-              localStorage.removeItem('aiChatMessages')
-              toast.success('Chat cleared successfully')
-            }}
+            onClick={clearChat}
             className="text-sm text-gray-500 hover:text-gray-700"
           >
             Clear Chat
@@ -363,106 +365,6 @@ export default function AIProject({ initialMessages }: AIProjectProps) {
             </div>
           )}
         </div>
-      </div>
-    </div>
-  )
-}
-
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold text-gray-900">Chat History</h2>
-          <button
-            onClick={clearChat}
-            className="text-sm text-gray-500 hover:text-gray-700"
-          >
-            Clear Chat
-          </button>
-        </div>
-
-        <div className="h-96 overflow-y-auto mb-6">
-          <AnimatePresence mode="wait">
-            {messages.map((message, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.2 }}
-                className={`mb-4 ${
-                  message.role === 'user'
-                    ? 'text-right'
-                    : message.role === 'assistant'
-                    ? 'text-left'
-                    : 'text-center'
-                }`}
-              <button
-                type="submit"
-                disabled={loading || uploading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm"
-              >
-                {loading ? 'Processing...' : uploading ? 'Uploading...' : 'Ask Question'}
-              </button>
-            </form>
-          </div>
-
-          {response && (
-            <div className="mt-4 p-4 border-t border-blue-100 bg-blue-50">
-              <div className="flex items-start">
-                <div className="bg-blue-100 p-2 rounded-full mr-3">
-                  <ChatBubbleLeftIcon className="h-5 w-5 text-blue-700" />
-                </div>
-                <div>
-                  <div className="font-medium text-blue-700 mb-1">AI Response:</div>
-                  <div className="prose prose-sm max-w-none text-gray-700">
-                    <ReactMarkdown>{response}</ReactMarkdown>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="mt-8 border border-gray-200 rounded-lg p-4 bg-gray-50">
-        <h3 className="font-medium text-gray-800 mb-3">Project Implementation Details</h3>
-        <ul className="space-y-2 text-sm">
-          <li className="flex items-start">
-            <div className="mr-2 mt-1">
-              <div className="h-2 w-2 bg-blue-500 rounded-full"></div>
-            </div>
-            <span className="text-gray-700">Built with Next.js 14 and React for modern UI</span>
-          </li>
-          <li className="flex items-start">
-            <div className="mr-2 mt-1">
-              <div className="h-2 w-2 bg-blue-500 rounded-full"></div>
-            </div>
-            <span className="text-gray-700">Utilizes LangChain for RAG implementation</span>
-          </li>
-          <li className="flex items-start">
-            <div className="mr-2 mt-1">
-              <div className="h-2 w-2 bg-blue-500 rounded-full"></div>
-            </div>
-            <span className="text-gray-700">Features document parsing and vector storage</span>
-          </li>
-          <li className="flex items-start">
-            <div className="mr-2 mt-1">
-              <div className="h-2 w-2 bg-blue-500 rounded-full"></div>
-            </div>
-            <span className="text-gray-700">Includes real-time document analysis and Q&A</span>
-          </li>
-          <li className="flex items-start">
-            <div className="mr-2 mt-1">
-              <div className="h-2 w-2 bg-blue-500 rounded-full"></div>
-            </div>
-            <span className="text-gray-700">Supports multiple document formats (PDF, DOCX, TXT)</span>
-          </li>
-        </ul>
-      </div>
-
-      {/* Project context */}
-      <div className="mt-6 border-t border-gray-200 pt-4 text-sm text-gray-500">
-        <p className="mb-2">This project demonstrates how to create an AI assistant that could help college students with their studies. Developed as part of a web development course assignment, it showcases implementing client-server communication with Next.js Route Handlers.</p>
-        <p>Note: The AI uses predetermined responses rather than a true AI model to avoid the need for API keys and to keep the implementation simple and educational.</p>
       </div>
     </div>
   )
