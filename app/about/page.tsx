@@ -57,7 +57,6 @@ export default function About() {
           <li>Real-time Systems</li>
         </ul>
 
-        <h2 className="text-xl font-bold mb-3">My Mission</h2>
         <p className="mb-6">
           To leverage technology to create meaningful solutions that improve lives and drive progress in the world.
         </p>
