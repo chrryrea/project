@@ -52,7 +52,7 @@ export default function SEO({
       <meta name="robots" content="index, follow" />
       <meta name="language" content="English" />
       <meta name="revisit-after" content="7 days" />
-      <meta name="author" content="Your Name" />
+      <meta name="author" content="chrryrea" />
     </Head>
   );
 } 

@@ -35,7 +35,7 @@ A modern, responsive personal portfolio website built with Next.js, TypeScript, 
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/portfolio.git
+   git clone https://github.com/chrryrea/portfolio.git
    cd portfolio
    ```
 
