@@ -40,6 +40,8 @@ export async function POST(request: Request) {
     }
 
     const data = await groqResponse.json();
+    console.log('Groq API status:', groqResponse.status);
+    console.log('Groq API response:', JSON.stringify(data));
     
     if (!data.choices?.[0]?.message?.content) {
       throw new Error('Invalid response format from Groq API');
