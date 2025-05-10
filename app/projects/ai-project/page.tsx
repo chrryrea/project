@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 
-const API_URL = "https://api-inference.huggingface.co/models/gpt2"; // Example free endpoint
+const API_URL = "/api/ai-chat"; // Example free endpoint
 
 export default function AIProjectPage() {
   const [messages, setMessages] = useState<{role: 'user' | 'ai', text: string}[]>([])
@@ -22,18 +22,16 @@ export default function AIProjectPage() {
     const userInput = input
     setInput("")
     try {
-      // Call a free public API (HuggingFace Inference API for GPT-2)
+      // Call the local AI chat API
       const response = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ inputs: userInput })
+        body: JSON.stringify({ query: userInput })
       })
       const data = await response.json()
       let aiText = "Sorry, no response."
-      if (Array.isArray(data) && data[0]?.generated_text) {
-        aiText = data[0].generated_text.replace(userInput, "").trim()
-      } else if (data?.generated_text) {
-        aiText = data.generated_text.replace(userInput, "").trim()
+      if (data?.response) {
+        aiText = data.response
       }
       setMessages(prev => [...prev, { role: 'ai', text: aiText }])
     } catch {

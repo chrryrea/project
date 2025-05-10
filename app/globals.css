@@ -21,3 +21,19 @@
 
 /* Import custom overrides - this must come last to ensure it overrides other styles */
 @import './styles/custom-overrides.css';
+
+.full-bleed {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+  z-index: 1;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  border-radius: 1rem;
+  padding: 2rem 0;
+}

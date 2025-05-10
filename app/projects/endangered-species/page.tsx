@@ -45,11 +45,11 @@ export default function EndangeredSpeciesVisualization() {
             </div>
           </div>
           
-          <div className="visualization-container">
+          <div className="visualization-container full-bleed">
             <h2 className="visualization-heading">Live Visualization</h2>
             <iframe 
               src="/visualization/index.html" 
-              className="w-full h-full border-0"
+              className="w-full h-[600px] border-0"
               title="Endangered Species Visualization"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
