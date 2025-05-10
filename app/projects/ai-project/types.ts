@@ -15,7 +15,7 @@ export interface APIResponse {
   success: boolean
   message?: string
   error?: string
-  data?: any
+  data?: unknown
 }
 
 export interface DocumentUploadResponse extends APIResponse {

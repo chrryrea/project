@@ -6,17 +6,11 @@ import { format } from 'date-fns'
 import { toast } from 'react-hot-toast'
 import { Loader2 } from 'lucide-react'
 import { DocumentTextIcon, QuestionMarkCircleIcon, PaperClipIcon } from '@heroicons/react/24/outline'
-import { Message, Document, DocumentUploadResponse, DocumentQAResponse } from './types'
-import { processDocument, formatDocumentList, validateFile } from './utils'
+import { Message, Document } from './types'
 import { formatFileSize } from '../../utils/formatFileSize'
-import ReactMarkdown from 'react-markdown'
 
-interface AIProjectProps {
-  initialMessages?: Message[]
-}
-
-export default function AIProject({ initialMessages }: AIProjectProps) {
-  const [messages, setMessages] = useState<Message[]>(initialMessages || [])
+export default function AIProjectPage() {
+  const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
@@ -27,21 +21,25 @@ export default function AIProject({ initialMessages }: AIProjectProps) {
 
   // Load initial messages from localStorage if available
   useEffect(() => {
-    const savedMessages = localStorage.getItem('aiChatMessages')
-    if (savedMessages) {
-      try {
-        const parsedMessages = JSON.parse(savedMessages)
-        setMessages(parsedMessages)
-      } catch (err) {
-        console.error('Error loading saved messages:', err)
-        toast.error('Failed to load saved messages')
+    if (typeof window !== 'undefined') {
+      const savedMessages = localStorage.getItem('aiChatMessages')
+      if (savedMessages) {
+        try {
+          const parsedMessages = JSON.parse(savedMessages)
+          setMessages(parsedMessages)
+        } catch (err) {
+          console.error('Error loading saved messages:', err)
+          toast.error('Failed to load saved messages')
+        }
       }
     }
   }, [])
 
   // Save messages to localStorage when they change
   useEffect(() => {
-    localStorage.setItem('aiChatMessages', JSON.stringify(messages))
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('aiChatMessages', JSON.stringify(messages))
+    }
   }, [messages])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -321,7 +319,7 @@ export default function AIProject({ initialMessages }: AIProjectProps) {
           {documents.length > 0 && (
             <div className="mb-4 p-4 bg-blue-50 rounded-lg">
               <h3 className="text-sm font-semibold mb-2">Uploaded Documents:</h3>
-              <pre className="text-sm whitespace-pre-wrap">{formatDocumentList(documents)}</pre>
+              <pre className="text-sm whitespace-pre-wrap">{formatFileSize(documents.reduce((total, doc) => total + doc.size, 0))}</pre>
             </div>
           )}
 
